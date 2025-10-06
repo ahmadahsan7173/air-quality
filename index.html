@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Air Quality Dashboard</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌎</text></svg>" sizes="any" type="image/svg+xml"/>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>🌍 Air Quality Monitor</h1>
+      <p class="subtitle">
+        Real-time air quality data and health recommendations
+      </p>
+
+      <div class="location-info">
+        <div class="location-item">
+          <strong>Location</strong>
+          <span id="locationName">--</span>
+        </div>
+        <div class="location-item">
+          <strong>Coordinates</strong>
+          <span id="coordinates">--</span>
+        </div>
+        <div class="location-item">
+          <strong>Elevation</strong>
+          <span id="elevation">--</span>
+        </div>
+        <div class="location-item">
+          <strong>Timezone</strong>
+          <span id="timezone">--</span>
+        </div>
+      </div>
+
+      <!-- AQI Section -->
+      <div class="aqi-section">
+        <h2 class="section-title">Air Quality Index (AQI)</h2>
+        <div id="aqi_card" class="aqi-card">
+          <div class="aqi-label">Current AQI Level</div>
+          <div class="aqi-value">
+            <span id="aqi_current">--</span>
+          </div>
+          <div class="aqi-description" id="aqi_description"></div>
+        </div>
+      </div>
+
+      <!-- AI Suggestions Section -->
+      <div class="ai-suggestions">
+        <h2 class="section-title">AI Health Recommendations</h2>
+        <div class="suggestion-box">
+          <div class="suggestion-text" id="ai_suggestion">
+            <span class="loading"></span> Analyzing air quality data...
+          </div>
+        </div>
+      </div>
+
+      <!-- Pollutants Section -->
+      <div class="pollutants-section">
+        <h2 class="section-title">Air Pollutants</h2>
+        <div class="metrics-grid">
+          <div id="pm2_5_Card" class="metric-card" data-pollutant="pm2.5">
+            <div class="tooltip">
+              <strong>PM 2.5 (Fine Particulate Matter)</strong><br />
+              Tiny particles ≤2.5 micrometers that can penetrate deep into lungs
+              and bloodstream. Major sources: vehicle emissions, industrial
+              activities, and combustion. Health effects: respiratory issues,
+              heart disease, reduced lung function.
+            </div>
+            <div class="metric-label">PM 2.5</div>
+            <div class="metric-value">
+              <span id="pm2_5_current">--</span>
+              <span class="metric-unit">µg/m³</span>
+            </div>
+          </div>
+
+          <div id="pm10_Card" class="metric-card" data-pollutant="pm10">
+            <div class="tooltip">
+              <strong>PM 10 (Coarse Particulate Matter)</strong><br />
+              Particles ≤10 micrometers from dust, pollen, and mold. Sources:
+              construction sites, unpaved roads, agriculture. Health effects:
+              irritates eyes, nose, and throat; aggravates asthma and lung
+              diseases.
+            </div>
+            <div class="metric-label">PM 10</div>
+            <div class="metric-value">
+              <span id="pm10_current">--</span>
+              <span class="metric-unit">µg/m³</span>
+            </div>
+          </div>
+
+          <div id="no2_card" class="metric-card" data-pollutant="no2">
+            <div class="tooltip">
+              <strong>Nitrogen Dioxide (NO₂)</strong><br />
+              Reddish-brown gas from fuel combustion. Primary sources: vehicles,
+              power plants, industrial facilities. Health effects: inflames
+              airways, reduces immunity to lung infections, worsens asthma
+              symptoms.
+            </div>
+            <div class="metric-label">Nitrogen Dioxide</div>
+            <div class="metric-value">
+              <span id="nitrogen_dioxide_current">--</span>
+              <span class="metric-unit">µg/m³</span>
+            </div>
+          </div>
+
+          <div id="o3_card" class="metric-card" data-pollutant="o3">
+            <div class="tooltip">
+              <strong>Ozone (O₃)</strong><br />
+              Ground-level ozone formed when pollutants react with sunlight. Not
+              emitted directly but created from vehicle and industrial
+              emissions. Health effects: chest pain, coughing, throat
+              irritation, congestion, reduced lung function.
+            </div>
+            <div class="metric-label">Ozone</div>
+            <div class="metric-value">
+              <span id="ozone_current">--</span>
+              <span class="metric-unit">µg/m³</span>
+            </div>
+          </div>
+
+          <div id="so2_card" class="metric-card" data-pollutant="so2">
+            <div class="tooltip">
+              <strong>Sulphur Dioxide (SO₂)</strong><br />
+              Colorless gas with pungent odor from burning coal and oil.
+              Sources: power plants, metal processing, petroleum refineries.
+              Health effects: breathing difficulties, respiratory illness,
+              aggravates existing heart disease.
+            </div>
+            <div class="metric-label">Sulphur Dioxide</div>
+            <div class="metric-value">
+              <span id="sulphur_dioxide_current">--</span>
+              <span class="metric-unit">µg/m³</span>
+            </div>
+          </div>
+
+          <div id="co_card" class="metric-card" data-pollutant="co">
+            <div class="tooltip">
+              <strong>Carbon Monoxide (CO)</strong><br />
+              Odorless, colorless gas from incomplete fuel combustion. Sources:
+              vehicles, stoves, furnaces, generators. Health effects: reduces
+              oxygen delivery to body organs, causes dizziness, confusion, can
+              be fatal in high concentrations.
+            </div>
+            <div class="metric-label">Carbon Monoxide</div>
+            <div class="metric-value">
+              <span id="carbon_monoxide_current">--</span>
+              <span class="metric-unit">µg/m³</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-section">
+        <h2 class="chart-title">3-Day Hourly Forecast</h2>
+        <div class="chart-container">
+          <div id="aqi_chart"></div>
+        </div>
+      </div>
+
+      <div class="chart-section">
+        <h2 class="chart-title">Air Forecast</h2>
+        <div class="chart-container">
+          <div id="forecastChart"></div>
+        </div>
+      </div>
+
+      <div class="chart-section">
+        <h2 class="chart-title">Individual Pollutant Trends</h2>
+        <div class="chart-container">
+          <div id="pm2_5_chart"></div>
+        </div>
+      </div>
+
+      <div class="chart-section">
+        <div class="chart-container">
+          <div id="pm10_chart"></div>
+        </div>
+      </div>
+
+      <div class="chart-section">
+        <div class="chart-container">
+          <div id="no2_chart"></div>
+        </div>
+      </div>
+
+      <div class="chart-section">
+        <div class="chart-container">
+          <div id="ozone_chart"></div>
+        </div>
+      </div>
+
+      <div class="chart-section">
+        <div class="chart-container">
+          <div id="so2_chart"></div>
+        </div>
+      </div>
+
+      <div class="chart-section">
+        <div class="chart-container">
+          <div id="co_chart"></div>
+        </div>
+      </div>
+      <div class="footer">
+        This is made by
+        <a target="_blank" href="https://linkedin.com/in/muhammadahmadahsan"
+          >Muhammad Ahmad Ahsan</a
+        >
+        for NASA Space App Challenge 2025
+      </div>
+    </div>
+
+    <script>
+      function updateAQIDescription(aqi) {
+        const aqiCard = document.getElementById("aqi_card");
+        const aqiDesc = document.getElementById("aqi_description");
+
+        if (aqi <= 50) {
+          aqiCard.style.background =
+            "linear-gradient(135deg, #a8e063 0%, #56ab2f 100%)";
+          aqiDesc.textContent =
+            "Good - Air quality is satisfactory, enjoy outdoor activities!";
+        } else if (aqi <= 100) {
+          aqiCard.style.background =
+            "linear-gradient(135deg, #fceabb 0%, #f8b500 100%)";
+          aqiDesc.textContent =
+            "Moderate - Acceptable air quality, unusually sensitive people should consider limiting prolonged outdoor activities.";
+        } else if (aqi <= 150) {
+          aqiCard.style.background =
+            "linear-gradient(135deg, #f7971e 0%, #ffd200 100%)";
+          aqiDesc.textContent =
+            "Unhealthy for Sensitive Groups - People with respiratory conditions should limit outdoor activities.";
+        } else if (aqi <= 200) {
+          aqiCard.style.background =
+            "linear-gradient(135deg, #f85032 0%, #e73827 100%)";
+          aqiDesc.textContent =
+            "Unhealthy - Everyone should limit prolonged outdoor activities. Sensitive groups should avoid outdoor activities.";
+        } else if (aqi <= 300) {
+          aqiCard.style.background =
+            "linear-gradient(135deg, #7b4397 0%, #dc2430 100%)";
+          aqiDesc.textContent =
+            "Very Unhealthy - Health alert! Everyone should avoid outdoor activities.";
+        } else {
+          aqiCard.style.background =
+            "linear-gradient(135deg, #3a1c71 0%, #d76d77 50%, #ffaf7b 100%)";
+          aqiDesc.textContent =
+            "Hazardous - Health emergency. Everyone should avoid all outdoor activities.";
+        }
+      }
+
+      // Generate hour labels
+      function generateHourLabels(count) {
+        const labels = [];
+        const now = new Date();
+        now.setMinutes(0, 0, 0);
+        now.setHours(now.getHours() + 1);
+        for (let i = 0; i < count; i++) {
+          const time = new Date(now.getTime() + i * 60 * 60 * 1000);
+          if (i % 6 === 0) {
+            // Show every 6 hours
+            labels.push(
+              time.toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+              })
+            );
+          } else {
+            labels.push("");
+          }
+        }
+        return labels;
+      }
+
+      // Update current values
+      function updateCurrentValues(data) {
+        document.getElementById("locationName").textContent = data.location;
+        document.getElementById("coordinates").textContent = data.coordinates;
+        document.getElementById("elevation").textContent = data.elevation;
+        document.getElementById("timezone").textContent = data.timezone;
+
+        document.getElementById("aqi_current").textContent =
+          data.current.us_aqi.toFixed(1);
+        document.getElementById("pm2_5_current").textContent =
+          data.current.pm2_5.toFixed(1);
+        document.getElementById("pm10_current").textContent =
+          data.current.pm10.toFixed(1);
+        document.getElementById("nitrogen_dioxide_current").textContent =
+          data.current.nitrogen_dioxide.toFixed(1);
+        document.getElementById("ozone_current").textContent =
+          data.current.ozone.toFixed(1);
+        document.getElementById("sulphur_dioxide_current").textContent =
+          data.current.sulphur_dioxide.toFixed(1);
+        document.getElementById("carbon_monoxide_current").textContent =
+          data.current.carbon_monoxide.toFixed(1);
+      }
+
+      // Convert object to array if needed
+      function convertToArray(data) {
+        if (Array.isArray(data)) return data;
+        return Object.values(data);
+      }
+
+      // Create combined forecast chart
+      function createForecastChart(data) {
+        const options = {
+          series: [
+            {
+              name: "PM 2.5",
+              data: convertToArray(data.pm2_5),
+            },
+            {
+              name: "PM 10",
+              data: convertToArray(data.pm10),
+            },
+            {
+              name: "NO₂",
+              data: convertToArray(data.nitrogen_dioxide),
+            },
+            {
+              name: "O₃",
+              data: convertToArray(data.ozone),
+            },
+            {
+              name: "SO₂",
+              data: convertToArray(data.sulphur_dioxide),
+            },
+            {
+              name: "CO",
+              data: convertToArray(data.carbon_monoxide),
+            },
+          ],
+          chart: {
+            height: 400,
+            type: "line",
+            zoom: {
+              enabled: true,
+            },
+            toolbar: {
+              show: false,
+            },
+            animations: {
+              enabled: true,
+              speed: 800,
+            },
+          },
+          dataLabels: {
+            enabled: false,
+          },
+          stroke: {
+            curve: "smooth",
+            width: 3,
+          },
+          title: {
+            text: "All Pollutants Overview",
+            align: "left",
+            style: {
+              fontSize: "18px",
+              fontWeight: "bold",
+            },
+          },
+          grid: {
+            row: {
+              colors: ["#f3f3f3", "transparent"],
+              opacity: 0.5,
+              padding: {
+                bottom: 10,
+              },
+            },
+          },
+          xaxis: {
+            categories: generateHourLabels(120),
+            title: {
+              text: "Time",
+              offsetY: 15,
+            },
+          },
+          yaxis: {
+            title: {
+              text: "Concentration (µg/m³)",
+            },
+            labels: {
+              formatter: function (value) {
+                return value.toFixed(2); // Shows: 25, 50, 75 instead of 25.00, 50.00
+              },
+            },
+          },
+          colors: [
+            "#00E396", // green
+            "#775DD0", // purple
+            "#FEB019", // orange
+            "#008FFB", // blue
+            "#546E7A", // gray/teal
+            "#26A69A", // teal
+          ],
+          legend: {
+            position: "top",
+          },
+          tooltip: {
+            shared: true,
+            intersect: false,
+          },
+        };
+
+        const chart = new ApexCharts(
+          document.querySelector("#forecastChart"),
+          options
+        );
+        chart.render();
+      }
+
+      // Create individual pollutant chart
+      function createPollutantChart(elementId, title, data, color) {
+        const options = {
+          series: [
+            {
+              name: title,
+              data: convertToArray(data),
+            },
+          ],
+          chart: {
+            height: 300,
+            type: "area",
+            zoom: {
+              enabled: true,
+            },
+            toolbar: {
+              show: false,
+            },
+          },
+          dataLabels: {
+            enabled: false,
+          },
+          stroke: {
+            curve: "smooth",
+            width: 2,
+          },
+          fill: {
+            type: "gradient",
+            gradient: {
+              shadeIntensity: 1,
+              opacityFrom: 0.7,
+              opacityTo: 0.3,
+              stops: [0, 90, 100],
+            },
+          },
+          title: {
+            text: title,
+            align: "left",
+            style: {
+              fontSize: "16px",
+              fontWeight: "bold",
+            },
+          },
+          xaxis: {
+            categories: generateHourLabels(120),
+            title: {
+              text: "Time",
+              offsetY: 15,
+            },
+          },
+          yaxis: {
+            title: {
+              text: "Concentration (µg/m³)",
+            },
+            labels: {
+              formatter: function (value) {
+                return value.toFixed(2); // Shows: 25, 50, 75 instead of 25.00, 50.00
+              },
+            },
+          },
+          colors: [color],
+          tooltip: {
+            x: {
+              format: "dd MMM HH:mm",
+            },
+          },
+        };
+
+        const chart = new ApexCharts(
+          document.querySelector(elementId),
+          options
+        );
+        chart.render();
+      }
+
+      // Initialize dashboard
+      function initDashboard(data) {
+        updateCurrentValues(data);
+        updateAQIDescription(data.current.us_aqi);
+        createPollutantChart(
+          "#aqi_chart",
+          "Air Quality Index Trend",
+          data.hourly_forecast.us_aqi,
+          "#FF4560"
+        );
+
+        createForecastChart(data.hourly_forecast);
+
+        createPollutantChart(
+          "#pm2_5_chart",
+          "PM 2.5 Trend",
+          data.hourly_forecast.pm2_5,
+          "#00E396"
+        );
+
+        createPollutantChart(
+          "#pm10_chart",
+          "PM 10 Trend",
+          data.hourly_forecast.pm10,
+          "#775DD0"
+        );
+
+        createPollutantChart(
+          "#no2_chart",
+          "Nitrogen Dioxide (NO₂) Trend",
+          data.hourly_forecast.nitrogen_dioxide,
+          "#FEB019"
+        );
+
+        createPollutantChart(
+          "#ozone_chart",
+          "Ozone (O₃) Trend",
+          data.hourly_forecast.ozone,
+          "#008FFB"
+        );
+
+        createPollutantChart(
+          "#so2_chart",
+          "Sulphur Dioxide Trend",
+          data.hourly_forecast.sulphur_dioxide,
+          "#546E7A"
+        );
+
+        createPollutantChart(
+          "#co_chart",
+          "Carbon Monooxide Trend",
+          data.hourly_forecast.carbon_monoxide,
+          "#26A69A"
+        );
+      }
+
+      async function getUserLocation() {
+        return new Promise((resolve, reject) => {
+          if (!navigator.geolocation) {
+            reject(new Error("Geolocation is not supported by this browser."));
+            return;
+          }
+
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              resolve({
+                lat: position.coords.latitude,
+                lon: position.coords.longitude,
+              });
+            },
+            (error) => {
+              switch (error.code) {
+                case error.PERMISSION_DENIED:
+                  reject(new Error("User denied the request for Geolocation."));
+                  break;
+                case error.POSITION_UNAVAILABLE:
+                  reject(new Error("Location information is unavailable."));
+                  break;
+                case error.TIMEOUT:
+                  reject(
+                    new Error("The request to get user location timed out.")
+                  );
+                  break;
+                default:
+                  reject(
+                    new Error(
+                      "An unknown error occurred while fetching location."
+                    )
+                  );
+              }
+            },
+            {
+              enableHighAccuracy: true,
+              timeout: 10000,
+              maximumAge: 0,
+            }
+          );
+        });
+      }
+
+      async function fetchAirQualityData(coordinates) {
+        const response = await fetch(
+          "https://airqualityapi.earth/api/v1/airQuality/",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(coordinates),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(
+            `Failed to fetch air quality data: ${response.status}`
+          );
+        }
+
+        return response.json();
+      }
+
+      async function fetchAIRecommendation(data) {
+        const response = await fetch(
+          "https://airqualityapi.earth/api/v1/airQuality/ai-recommendation",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(
+            `Failed to fetch AI recommendation: ${response.status}`
+          );
+        }
+
+        return response.json();
+      }
+
+      function displayAIRecommendation(recommendation) {
+        const aiDiv = document.getElementById("ai_suggestion");
+        aiDiv.innerHTML = marked.parse(recommendation);
+      }
+
+      function showAIError() {
+        const aiDiv = document.getElementById("ai_suggestion");
+        aiDiv.textContent =
+          "Unable to load AI recommendations. Please try again later.";
+      }
+
+      async function initializeApp() {
+        try {
+          const coordinates = await getUserLocation();
+
+          const airQualityData = await fetchAirQualityData(coordinates);
+
+          initDashboard(airQualityData);
+
+          const aiRequestData = { ...airQualityData };
+          delete aiRequestData.hourly_forecast;
+
+          try {
+            const aiResponse = await fetchAIRecommendation(aiRequestData);
+            displayAIRecommendation(aiResponse.data);
+          } catch (aiError) {
+            console.error("AI recommendation error:", aiError);
+            showAIError();
+          }
+        } catch (error) {
+          console.error("Application initialization error:", error);
+          // You can add user-facing error handling here
+        }
+      }
+
+      // Initialize when page loads
+      window.addEventListener("load", initializeApp);
+    </script>
+  </body>
+</html>

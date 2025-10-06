@@ -1,0 +1,287 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: rgb(204, 204, 204) e;
+  min-height: 100vh;
+  padding: 10px;
+}
+.container {
+  max-width: 1600px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 20px;
+  padding: 15px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 10px;
+  font-size: 2.5em;
+}
+.subtitle {
+  text-align: center;
+  color: #666;
+  margin-bottom: 30px;
+  font-size: 1.1em;
+}
+.location-info {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+.location-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  text-align: center;
+  margin: 10px;
+}
+.location-item strong {
+  color: #555;
+  font-size: 0.9em;
+}
+.location-item span {
+  color: #333;
+  font-weight: 500;
+}
+.location-item strong {
+  display: block;
+  color: #667eea;
+  margin-bottom: 5px;
+}
+
+/* AQI Section - Separate and Prominent */
+.aqi-section {
+  margin-bottom: 40px;
+}
+.section-title {
+  font-size: 1.8em;
+  color: #333;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid #4ab4ff;
+}
+.aqi-card {
+  background: rgb(154, 154, 154);
+  padding: 40px;
+  border-radius: 20px;
+  color: white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  transition: transform 0.3s;
+}
+
+.aqi-label {
+  font-size: 1.2em;
+  opacity: 0.95;
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+.aqi-value {
+  font-size: 4em;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+.aqi-description {
+  margin-top: 15px;
+  font-size: 1.1em;
+  opacity: 0.9;
+}
+
+/* AI Suggestions Section */
+.loading {
+  margin-right: 10px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.ai-suggestions {
+  margin-bottom: 40px;
+}
+.suggestion-box {
+  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+.suggestion-icon {
+  font-size: 2.5em;
+  margin-bottom: 15px;
+}
+.suggestion-text {
+  justify-content: center;
+  align-items: center;
+  color: #333;
+  font-size: 1.1em;
+  line-height: 1.8;
+}
+
+/* Pollutants Section */
+.pollutants-section {
+  margin-bottom: 30px;
+}
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+@media (min-width: 1400px) {
+  .metrics-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.metric-card {
+  background: linear-gradient(135deg, #4ab4ff 0%, #6af96c 100%);
+  padding: 25px;
+  border-radius: 15px;
+  color: white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+  cursor: pointer;
+  position: relative;
+}
+.metric-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+.metric-label {
+  font-size: 0.9em;
+  opacity: 0.9;
+  margin-bottom: 10px;
+}
+.metric-value {
+  font-size: 2.5em;
+  font-weight: bold;
+}
+.metric-unit {
+  font-size: 0.5em;
+  opacity: 0.8;
+}
+
+/* Tooltip */
+.tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  background: rgba(0, 0, 0, 0.95);
+  color: white;
+  padding: 15px 20px;
+  border-radius: 10px;
+  font-size: 0.9em;
+  line-height: 1.6;
+  width: 280px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s;
+  z-index: 1000;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+.tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 8px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.95);
+}
+.metric-card:hover .tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-5px);
+}
+.chart-section {
+  margin-bottom: 30px;
+}
+.chart-title {
+  font-size: 1.5em;
+  color: #333;
+  margin-bottom: 15px;
+  padding-left: 10px;
+  border-left: 4px solid #667eea;
+}
+.chart-container {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Charts Section */
+.charts-section {
+  margin-top: 40px;
+}
+.chart-section {
+  margin-bottom: 40px;
+}
+.chart-title {
+  font-size: 1.5em;
+  color: #333;
+  margin-bottom: 20px;
+  padding-left: 10px;
+  border-left: 4px solid #4ab4ff;
+}
+
+/* Pollutant Charts Grid */
+.pollutant-charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 25px;
+  margin-top: 20px;
+}
+@media (max-width: 768px) {
+  .pollutant-charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.pollutant-chart-item {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+.pollutant-chart-label {
+  font-size: 1.1em;
+  color: #555;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+.pollutant-chart-item .chart-container {
+  background: white;
+  margin-top: 10px;
+  padding: 15px;
+  min-height: 250px;
+}
+.footer {
+  width: 100%;
+  border-radius: 10px;
+  text-align: center;
+  padding: 12px 0;
+  margin-top: 40px;
+  background: #f5f5f5;
+  font-size: 14px;
+  color: #333;
+  border-top: 1px solid #ddd;
+  font-family: Arial, sans-serif;
+}
+.footer a {
+  color: #0077cc;
+}
